@@ -105,18 +105,24 @@ const Login: React.FC = () => {
     try {
       // 登录
       const res = await userLoginUsingPost({ ...values });
-      if (res.data) {
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+      if (res.code === 0) {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
+        const urlParams = new URL(window.location.href).searchParams;
+        history.push(urlParams.get('redirect') || '/');
         setInitialState({
           loginUser: res.data
         });
         return;
+      }else {
+        const defaultLoginSuccessMessage = intl.formatMessage({
+          id: 'pages.login.fail',
+          defaultMessage: '登录失败！账号或密码错误',
+        });
+        message.error(defaultLoginSuccessMessage);
       }
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
